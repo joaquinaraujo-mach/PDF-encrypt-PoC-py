@@ -1,5 +1,5 @@
-from encrypt_pdf import EncryptPDF
-from S3 import S3
+from helpers.encrypt_pdf import EncryptPDF
+from helpers.S3 import S3
 
 # Import Libraries
 from io import BytesIO
