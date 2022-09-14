@@ -24,7 +24,7 @@ Please check `src/run.py` file
 
 - Lambda file is `run_lambda.py`
 - Set env `S3_BUCKET_DESTINATION_NAME` with encrypted PDF destination bucket name
-- When you upload a file in `no-encrypted-pdf` bucket trigger a event to this lambda and encrypt pdf and upload to `encrypt-pdf` bucket with the same filename but added `_encrypyted.pdf`
+- When you upload a file in `no-encrypted-pdf` bucket trigger a event to this lambda and encrypt pdf and upload to `encrypt-pdf` bucket with the same filename but with `encrypyted_` on start
   anything- The filename format needed is: `####_d_11111111_####.pdf` where 11111111 is document number without DV and #### is anything
 
 PDF upload to S3 bucket 'encrypt-pdf' (change in run.py)
