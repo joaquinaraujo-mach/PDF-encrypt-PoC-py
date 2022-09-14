@@ -20,8 +20,10 @@ class S3:
         :param content_type: the content type or mime type of the file
         :return:
         """
+        print("Starting upload")
         s3 = boto3.client('s3')
         s3.put_object(Body=file_binary, Bucket=bucket_name, Key=file_uploaded_name, ContentType=content_type)
+        print("Upload finished")
 
     @staticmethod
     def get(bucket_name: str, file_name: str):
@@ -31,8 +33,10 @@ class S3:
         :param file_name: the name of the file that you need to get file in S3
         :return dict with binary on Body field
         """
+        print("Starting get object")
         s3 = boto3.client('s3')
         file = s3.get_object(Bucket=bucket_name, Key=file_name)
+        print("Get object finished")
         return file
 
 class EncryptPDF:
@@ -93,7 +97,7 @@ def processFile(sourceBucket: str, sourceKey: str):
                 pdf_writer.write(bytes_stream)
                 bytes_stream.seek(0)
                 S3.upload(S3_BUCKET_DESTINATION_NAME, bytes_stream, f'{sourceKey}_encrypted.pdf', 'application/pdf')
-                return true
+                return True
 
 def lambda_handler(event, context):
     sourceBucket = event['Records'][0]['s3']['bucket']['name']
