@@ -3,7 +3,7 @@
 ## How can you use it?
 
 * Generate docker image: `docker build --rm -t mach-encrypt-pdf-py:latest .`
-* Run script: `docker run --rm -it -v $PWD:/opt/app mach-encrypt-pdf-py python src/test_run.py`
+* Run script: `docker run --rm -it -v $PWD:/opt/app mach-encrypt-pdf-py python src/event_run.py`
 
 ## API to use script
 The base64Pdf would be "PDF", encryptedBase64Pdf would be "Encrypted PDF"
