@@ -1,6 +1,5 @@
 *.log
 __pycache__
 package
-src/in-memory/*.pdf
-src/helpers/doc-encrypted.pdf
+src/in-memory/doc-encrypted.pdf
 .DS_Store

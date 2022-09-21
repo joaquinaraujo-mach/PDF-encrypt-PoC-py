@@ -1,31 +1,40 @@
-from helpers.encrypt_pdf import EncryptPDF
-from helpers.S3 import S3
-from helpers.utils import Utils
-
-# Import Libraries
 from io import BytesIO
-from datetime import datetime
+import base64
+from PyPDF2 import PdfFileReader, PdfFileWriter
 
-S3_BUCKET_NAME = 'no-encrypted-pdf'
-S3_DESTINATION_BUCKET_NAME = 'encrypt-pdf'
-INPUT_FILE = 'without_password_d_19194798_asd.pdf'
-OUTPUT_FILE = 'without_password_d_19194798_asd'
+class EncryptPDF:
+  @staticmethod
+  def encrypt_pdf(file, username: str, password: str):
+    writer = PdfFileWriter()
+    reader = PdfFileReader(file)
 
-if __name__ == '__main__':
-    #Get file from s3
-    file_object = S3.get(S3_BUCKET_NAME, INPUT_FILE)
+    if reader.isEncrypted:
+        print(f"PDF File already encrypted")
+        return True, None
+    try:
+        # To encrypt all the pages of the input file, you need to loop over all of them
+        # and to add them to the writer.
+        for page_number in range(reader.numPages):
+            writer.addPage(reader.getPage(page_number))
+    except PdfReadError as e:
+        print(f"Error reading PDF File = {e}")
+        return True, None
+    # The default is 128 bit encryption (if false then 40 bit encryption).
+    writer.encrypt(user_pwd=username, owner_pwd=password, use_128bit=True)
 
-    if file_object['Body']:
-        fs = file_object['Body'].read()
-        #Encrypt PDF
-        result, pdf_reader, pdf_writer = EncryptPDF.encrypt_pdf(
-                input_file=BytesIO(fs), password=Utils.generate_password(INPUT_FILE))
+    return False, writer
 
-        # Encryption completed successfully
-        if result:
-            # Save the new PDF on S3 directly
-            with BytesIO() as bytes_stream:
-                pdf_writer.write(bytes_stream)
-                bytes_stream.seek(0)
-                S3.upload(S3_DESTINATION_BUCKET_NAME, bytes_stream, f'{OUTPUT_FILE}_encrypted.pdf', 'application/pdf')
-        
+def encrypt_base64_pdf(base64Pdf: str, username: str, password: str) -> str:
+  err, encrypted_pdf = EncryptPDF.encrypt_pdf(
+    file=BytesIO(base64.b64decode(base64Pdf)),
+    username=username,
+    password=password
+  )
+
+  if err:
+    return ""
+
+  with BytesIO() as stream:
+    encrypted_pdf.write_stream(stream)
+    stream.seek(0)
+    return base64.b64encode(stream.read())
