@@ -38,3 +38,12 @@ def encrypt_base64_pdf(base64Pdf: str, username: str, password: str) -> str:
     encrypted_pdf.write_stream(stream)
     stream.seek(0)
     return base64.b64encode(stream.read())
+
+def handler (base64Pdf: str, username: str, password: str) -> str:
+  encryptedBase64Pdf = encrypt_base64_pdf(
+    base64Pdf=base64Pdf,
+    username=username,
+    password=password
+  )
+
+  return encryptedBase64Pdf
